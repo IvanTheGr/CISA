@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_BASE_URL = "/api";
+import { API_BASE_URL } from "./apiConfig";
 
 export const fetchMyTickets = () =>
   axios.get(`${API_BASE_URL}/my/tickets`, {

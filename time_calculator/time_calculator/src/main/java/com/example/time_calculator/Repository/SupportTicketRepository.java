@@ -180,6 +180,18 @@ public interface SupportTicketRepository extends JpaRepository<SupportTicket, Lo
     """)
     List<SupportTicket> findAllOpenTicketsForGroupedView();
 
+    @Query("""
+        SELECT t
+        FROM SupportTicket t
+        LEFT JOIN FETCH t.partner p
+        LEFT JOIN FETCH p.parent
+        LEFT JOIN FETCH t.product
+        LEFT JOIN FETCH t.priority
+        WHERE t.stateName IS NOT NULL
+        ORDER BY t.id ASC
+    """)
+    List<SupportTicket> findAllForSlaMetrics();
+
     @Query(
             value = """
                 SELECT *

@@ -23,9 +23,11 @@ import TicketHistoryDetailPage from "./pages/TicketHistoryDetailPage";
 import IncidentApprovalPage from "./pages/IncidentApprovalPage";
 import IncidentApprovalDetailPage from "./pages/IncidentApprovalDetailPage";
 import CustomerRatingPage from "./pages/CustomerRatingPage";
+import SLAConfigPage from "./pages/SLAConfigPage";
 
 import UserManagementPage from "./pages/UserManagementPage";
 import RolePermissionPage from "./pages/RolePermissionPage";
+import ReminderPage from "./pages/ReminderPage";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -80,6 +82,14 @@ function App() {
           element={
             <W>
               <DeleteTicketPage />
+            </W>
+          }
+        />
+        <Route 
+          path="/ticket/sla-config"
+          element={
+            <W>
+              <SLAConfigPage />
             </W>
           }
         />
@@ -239,6 +249,7 @@ function App() {
             {/* SETTINGS */}
         <Route path="/setting/user" element={<W><UserManagementPage /></W>} />
         <Route path="/setting/role" element={<W><RolePermissionPage /></W>} />
+          <Route path="/setting/reminder" element={<W><ReminderPage /></W>} />
 
         {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/" replace />} />

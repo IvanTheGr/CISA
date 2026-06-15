@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../api/apiConfig";
 import { FiCheckCircle } from "react-icons/fi";
 import { FiStar } from "react-icons/fi";
 
@@ -29,7 +30,7 @@ import {
   isCustomer,
 } from "../utils/roleAccess";
 
-const API_BASE_URL = "/api";
+// API_BASE_URL imported from apiConfig
 
 const TOP_NAV_ITEMS = [
   { to: "/", icon: FiHome, label: "Dashboard", end: true },
@@ -56,6 +57,7 @@ const MANAGER_TICKET_ITEMS = [
   { to: "/ticket/grouped", icon: FiList, label: "Grouped Tickets" },
   { to: "/ticket/approval", icon: FiCheckCircle, label: "Approve Incident" },
   { to: "/ticket/history", icon: FiFileText, label: "History Ticket" },
+  { to: "/ticket/sla-config", icon: FiSettings, label: "SLA Config" },
   { to: "/ticket", icon: FiList, label: "Edit Ticket", end: true },
   {
     to: "/ticket/delete",

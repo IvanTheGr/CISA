@@ -1,20 +1,27 @@
 package com.example.time_calculator.Controller;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.time_calculator.Entity.ResUsers;
 import com.example.time_calculator.Repository.ResUsersRepository;
 import com.example.time_calculator.Security.JwtService;
 import com.example.time_calculator.Service.AuthService;
 import com.example.time_calculator.dto.LoginRequestDTO;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,8 +33,9 @@ public class AuthController {
     private final ResUsersRepository repository;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDTO request,
-                        HttpServletResponse response) {
+    public Map<String, Object> login(@RequestBody LoginRequestDTO request,
+                                     HttpServletRequest requestHttp,
+                                     HttpServletResponse response) {
 
         ResUsers user = authService.login(
                 request.getLogin(),
@@ -39,17 +47,34 @@ public class AuthController {
 
         String token = jwtService.generateToken(user.getLogin(), roles);
 
-        ResponseCookie cookie = ResponseCookie.from("AUTH_TOKEN", token)
+        boolean secureCookie = requestHttp.isSecure();
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from("AUTH_TOKEN", token)
                 .httpOnly(true)
-                .secure(true)
+                .secure(secureCookie)
                 .path("/")
-                .maxAge(Duration.ofHours(2))
-                .sameSite("None")
-                .build();
+                .maxAge(Duration.ofHours(2));
 
-        response.addHeader("Set-Cookie", cookie.toString());
+        if (secureCookie) {
+            cookieBuilder.sameSite("None");
+        } else {
+            cookieBuilder.sameSite("Lax");
+        }
 
-        return "Login success";
+        response.addHeader("Set-Cookie", cookieBuilder.build().toString());
+
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("id", user.getId());
+        userInfo.put("login", user.getLogin());
+        userInfo.put("active", user.getActive());
+        userInfo.put("companyId", user.getCompanyId());
+        userInfo.put("employeeId", user.getEmployeeId());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("token", token);
+        result.put("user", userInfo);
+        result.put("roles", roles);
+        result.put("message", "Login success");
+        return result;
     }
 
     @GetMapping("/me")

@@ -1,12 +1,10 @@
 import axios from "axios";
-
-// const API = "/api";
-const API = "/api";
+import { API_BASE_URL } from "./apiConfig";
 
 axios.defaults.withCredentials = true;
 
 export const loginApi = (login, password) => {
-  return axios.post(`${API}/auth/login`, {
+  return axios.post(`${API_BASE_URL}/auth/login`, {
     login,
     password
   });

@@ -1,7 +1,5 @@
 import axios from "axios";
-
-// const API_BASE_URL = "/api";
-const API_BASE_URL = "/api";
+import { API_BASE_URL } from "./apiConfig";
 // withCredentials globally set in authApi.js (axios.defaults.withCredentials = true)
 // All profile calls inherit that setting
 

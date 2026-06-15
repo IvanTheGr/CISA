@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../api/apiConfig";
 
 /* ── tiny bell icon ── */
 const BellIcon = () => (
@@ -77,7 +78,7 @@ const Topbar = ({ toggleSidebar, isOpen }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("/api/auth/me", {
+        const res = await axios.get(`${API_BASE_URL}/auth/me`, {
           withCredentials: true,
         });
         setPartnerName(res.data.partnerName);
@@ -111,7 +112,7 @@ if (foundRole) {
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      await axios.post(`${API_BASE_URL}/auth/logout`, {}, { withCredentials: true });
       window.location.href = "/login";
     } catch (err) {
       console.error("Logout failed", err);
